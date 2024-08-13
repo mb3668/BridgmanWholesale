@@ -1,0 +1,9 @@
+appsettings.json
+node_modules/
+*.lock
+*.csproj.user
+*.log
+*.dll
+/bin
+/obj
+*.vsidx
