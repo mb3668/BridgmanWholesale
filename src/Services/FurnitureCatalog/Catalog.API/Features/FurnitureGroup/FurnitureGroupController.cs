@@ -18,7 +18,7 @@ public class FurnitureGroupController : ControllerBase
     [HttpGet("GetAllGroups")]
     public IEnumerable<FurnitureGroupModel> GetAllGroups()
     {
-        string sql = "SELECT FurnitureGroupId, FurnitureGroupPrice FROM furniture_group;";
+        string sql = "SELECT FurnitureGroupId, FurnitureGroupPrice, FurnitureGroupIsDelivered FROM furniture_group;";
 
         IEnumerable<FurnitureGroupModel> AllGroups = _dapper.LoadData<FurnitureGroupModel>(sql);
 
@@ -28,7 +28,7 @@ public class FurnitureGroupController : ControllerBase
     [HttpPost("CreateGroup")]
     public IActionResult CreateGroup(FurnitureGroupDto groupToAdd)
     {
-        string sql = $"INSERT INTO furniture_group (FurnitureGroupPrice) VALUES ({groupToAdd.FurnitureGroupPrice});";
+        string sql = $"INSERT INTO furniture_group (FurnitureGroupPrice, FurnitureGroupIsDelivered) VALUES ({groupToAdd.FurnitureGroupPrice}, {groupToAdd.FurnitureGroupIsDelivered});";
 
         if (_dapper.ExecuteSql(sql))
         {
@@ -41,7 +41,7 @@ public class FurnitureGroupController : ControllerBase
     [HttpPut("EditGroup")]
     public IActionResult EditGroup(FurnitureGroupModel groupToEdit)
     {
-        string sql = $"UPDATE furniture_group SET FurnitureGroupPrice = {groupToEdit.FurnitureGroupPrice} WHERE FurnitureGroupId = {groupToEdit.FurnitureGroupId};";
+        string sql = $"UPDATE furniture_group SET FurnitureGroupPrice = {groupToEdit.FurnitureGroupPrice}, FurnitureGroupIsDelivered = {groupToEdit.FurnitureGroupIsDelivered} WHERE FurnitureGroupId = {groupToEdit.FurnitureGroupId};";
 
         if (_dapper.ExecuteSql(sql))
         {
@@ -49,6 +49,29 @@ public class FurnitureGroupController : ControllerBase
         }
 
         throw new Exception("Failed to edit group.");
+    }
+
+    [HttpPut("EditImage/{groupId}")]
+    public IActionResult EditImage(int groupId, [FromBody] byte[] img)
+    {
+        if (img == null || img.Length == 0)
+        {
+            return BadRequest("No image provided");
+        }
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "Image", img },
+            { "GroupId", groupId }
+        };
+
+        string sql = $"UPDATE furniture_group SET FurnitureImage = @Image WHERE FurnitureGroupId = @GroupId;";
+
+        if (_dapper.ExecuteSqlWithParameters(sql, parameters))
+        {
+            return Ok();
+        }
+        throw new Exception("Failed to add image.");
     }
 
     [HttpDelete("DeleteGroup/{id}")]

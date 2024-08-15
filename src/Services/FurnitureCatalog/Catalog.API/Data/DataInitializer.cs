@@ -32,7 +32,8 @@ public class DataInitializer
                 DbConnection.Execute(
                     @"CREATE TABLE furniture_group (
                         FurnitureGroupId SERIAL PRIMARY KEY,
-                        FurnitureGroupPrice DECIMAL (10, 2) NOT NULL
+                        FurnitureGroupPrice DECIMAL (10, 2) NOT NULL,
+                        FurnitureGroupIsDelivered BOOLEAN NOT NULL
                     );"
                 );
             }

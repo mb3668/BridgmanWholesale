@@ -1,0 +1,11 @@
+﻿@page
+@model BridgmanWholesale.Pages.CatalogModel
+@{
+    ViewData["Title"] = "BridgmanWholesale";
+}
+
+<h1>@foreach(var furniture in @Model.FurniturePrices)
+    {
+        @furniture.FurnitureName
+    }
+</h1>

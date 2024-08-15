@@ -1,0 +1,40 @@
+﻿@page
+@model BridgmanWholesale.Pages.ImageUploadModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container-lg">
+    <h2 class="top-text">Upload Image</h2>
+    @using (Html.BeginForm("SubmitForm", "ImageUploadModel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="mb-3">
+            <label for="furnitureGroup" class="form-label">Choose Image Group</label>
+            <input class="form-control" list="groupOptions" id="furnitureGroup" name="FurnitureGroup" placeholder="Search here..." />
+            <datalist id="groupOptions">
+                @foreach (var option in Model.FurnitureGroupList)
+                {
+                    <option value="@option.FurnitureGroupPrice" />
+                }
+            </datalist>
+            <input type="hidden" id="furnitureGroupId" name="FurnitureGroupId" />
+        </div>
+
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Default file input example</label>
+            <input class="form-control" type="file" id="formFile" name="File">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enter Image</button>
+    }
+</div>
+
+<style>
+    .top-text {
+        text-align: center;
+    }
+    .btn-primary {
+        border-radius: 8px;
+        background-color: lightblue;
+    }
+</style>

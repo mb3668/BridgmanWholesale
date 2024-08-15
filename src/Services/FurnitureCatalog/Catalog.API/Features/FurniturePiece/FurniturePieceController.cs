@@ -21,11 +21,21 @@ public class FurniturePieceController : ControllerBase
     [HttpGet("GetAllPieces")]
     public IEnumerable<FurniturePieceModel> GetAllPieces()
     {
-        string sql = "SELECT FurnitureId, FurnitureName, FurnitureImage, FurnitureSetPieceId, FurniturePriceGroupId5 FROM furniture_piece;";
+        string sql = "SELECT FurnitureId, FurnitureName, FurnitureSetPieceId, FurniturePriceGroupId FROM furniture_piece;";
 
         IEnumerable<FurniturePieceModel> AllPieces = _dapper.LoadData<FurniturePieceModel>(sql);
 
         return AllPieces;
+    }
+
+    [HttpGet("GetPieceByType/{id}")]
+    public IEnumerable<FurniturePieceModel> GetPieceByType(int id)
+    {
+        string sql = "SELECT FurnitureId, FurnitureName, FurnitureSetPieceId, FurniturePriceGroupId FROM furniture_piece WHERE FurniturePriceGroupId = " + id.ToString() + ";";
+
+        IEnumerable<FurniturePieceModel> PieceByType = _dapper.LoadData<FurniturePieceModel>(sql);
+
+        return PieceByType;
     }
 
     [HttpPost("CreatePiece")]
@@ -52,29 +62,6 @@ public class FurniturePieceController : ControllerBase
         }
 
         throw new Exception("Failed to edit piece.");
-    }
-
-    [HttpPut("EditImage/{furnitureId}")]
-    public IActionResult EditImage(int furnitureId, [FromBody] byte[] img)
-    {
-        if (img == null || img.Length == 0)
-        {
-            return BadRequest("No image provided");
-        }
-
-        var parameters = new Dictionary<string, object>
-        {
-            { "Image", img },
-            { "FurnitureId", furnitureId }
-        };
-
-        string sql = $"UPDATE furniture_piece SET FurnitureImage = @Image WHERE FurnitureId = @furnitureId;";
-
-        if (_dapper.ExecuteSqlWithParameters(sql, parameters))
-        {
-            return Ok();
-        }
-        throw new Exception("Failed to add image.");
     }
 
     [HttpDelete("DeletePiece/{id}")]
